@@ -12,7 +12,7 @@ with col1:
     kwh = st.number_input("Electricity (kWh/month)", min_value=0, value=900, help="US average ~900 kWh/month")
     gas = st.number_input("Natural gas (therms/month)", min_value=0, value=50, help="Enter 0 if all-electric")
 with col2:
-    oil = st.number_input("Heating oil (gallons/month)", min_value=0, value=0)
+    oil = st.number_input("Heating oil (gallons/month)", min_value=0, value=0, help="US average around 100-200 gallons/month")
     solar = st.selectbox("Solar panels?", options=[
         ("No", 0.0),
         ("Partial offset (~50%)", 0.5),
