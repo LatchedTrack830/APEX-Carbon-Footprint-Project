@@ -33,10 +33,10 @@ for i in range(num_cars):
     st.subheader(f"Vehicle {i+1}")
     c1, c2, c3 = st.columns(3)
     with c1:
-        vtype = st.selectbox("Type", ["Gasoline", "Hybrid", "Electric (EV)"], key=f"vtype_{i}", help="Around 25mpg on average, newer models closer to 30mpg.")
+        vtype = st.selectbox("Type", ["Gasoline", "Hybrid", "Electric (EV)"], key=f"vtype_{i}")
     with c2:
         label = "Efficiency (MPGe)" if vtype == "Electric (EV)" else "Fuel economy (MPG)"
-        mpg = st.number_input(label, min_value=1, value=28, key=f"mpg_{i}")
+        mpg = st.number_input(label, min_value=1, value=28, key=f"mpg_{i}", help="Around 25mpg on average, newer models closer to 30mpg.")
     with c3:
         miles = st.number_input("Miles/year", min_value=0, value=12000, key=f"miles_{i}", help="12,000-14,000 miles per year.")
 
