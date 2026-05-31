@@ -152,4 +152,59 @@ else:
     st.info("Enter your data above to see the chart.")
 
 st.divider()
+
+# --- RECOMMENDATIONS ---
+st.header("💡 Recommendations")
+
+if total == 0:
+    st.info("Fill in your data above to get personalized recommendations.")
+else:
+    # Score each category as fraction of total, build targeted tips
+    recs = []
+
+    # Home energy
+    if home_total / total > 0.15:
+        if solar[1] == 0.0:
+            recs.append(("🏠", "Install solar panels", f"Your home energy accounts for {home_total:.1f} t. Solar panels can offset 50–90% of your electricity emissions and typically pay back in 6–10 years."))
+        if kwh > 1000:
+            recs.append(("🏠", "Reduce electricity usage", f"At {kwh} kWh/month you're above average. Switching to LED bulbs, smart thermostats, and Energy Star appliances can cut usage by 20–30%."))
+        if gas > 60:
+            recs.append(("🏠", "Switch from gas to electric heating/cooking", f"You're using {gas} therms/month of natural gas. Heat pumps are 2–4x more efficient than gas furnaces and eliminate gas emissions entirely."))
+
+    # Driving
+    if drive_total / total > 0.15:
+        has_gas_car = any(True for i in range(num_cars) if st.session_state.get(f"vtype_{i}", "Gasoline") != "Electric (EV)")
+        recs.append(("🚗", "Switch to an electric vehicle", f"Driving contributes {drive_total:.1f} t to your footprint. Replacing a gas car with an EV can save 1.5–3 t CO₂e per year depending on your grid."))
+        recs.append(("🚗", "Drive less", f"You're driving a lot. Combining errands, carpooling, or working from home 1–2 days/week can cut mileage — and emissions — by 10–20%."))
+
+    # Flights
+    if fly_total > 1.0:
+        recs.append(("✈️", "Reduce flights", f"Flights add {fly_total:.1f} t — one of the highest-impact single actions. Taking one fewer long-haul flight saves ~1.6 t. Consider train travel for shorter trips."))
+    if fly_total > 3.0:
+        recs.append(("✈️", "Purchase carbon offsets for flights", "Since flights are a large share of your footprint, high-quality carbon offsets (e.g. Gold Standard certified) can neutralize the impact while you work on reducing travel."))
+
+    # Diet
+    if diet_choice == "Meat-heavy (beef most days)":
+        recs.append(("🥗", "Reduce beef consumption", f"A meat-heavy diet contributes {diet_total:.1f} t. Cutting beef to 2–3x/week and replacing with chicken, fish, or plant-based meals can save 0.5–1.5 t per person per year."))
+    elif diet_choice == "Average omnivore":
+        recs.append(("🥗", "Try a flexitarian diet", f"Shifting toward less meat a few more days per week could save ~0.3–0.6 t per person. You don't need to go fully vegetarian to make a meaningful difference."))
+
+    # Shopping
+    if shop_total / total > 0.15:
+        recs.append(("🛍️", "Buy less, buy secondhand", f"Shopping contributes {shop_total:.1f} t. Buying secondhand clothes, extending device lifespans by 1–2 years, and avoiding impulse purchases are among the easiest cuts."))
+    if electronics > 50:
+        recs.append(("🛍️", "Keep electronics longer", f"You spend ~${electronics}/month on electronics. Manufacturing a new smartphone emits ~70 kg CO₂e. Keeping devices an extra year or two adds up significantly."))
+
+    # Always add a general tip if footprint is high
+    if total > avg:
+        recs.append(("🌱", "You're above the US average", f"Your household emits {diff:+.1f} t more than the US average for {people} people. The tips above, if all acted on, could realistically cut your footprint by 30–50%."))
+
+    if not recs:
+        st.success(f"Your footprint of {total:.1f} t is already below the US average for your household size. Keep it up!")
+    else:
+        for icon, title, desc in recs:
+            with st.expander(f"{icon} {title}"):
+                st.write(desc)
+
+st.divider()
 st.caption("Emission factors: EPA eGRID (electricity), EPA GHG inventory (gas/oil/fuel), OWID (diet), BEIS (flights). Results are estimates.")
