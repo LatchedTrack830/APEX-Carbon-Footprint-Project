@@ -118,7 +118,7 @@ if total > 0:
     values = [home_total, drive_total, fly_total, diet_total, shop_total]
     colors = ["#1D9E75", "#7F77DD", "#D85A30", "#EF9F27", "#D4537E"]
 
-    fig, ax = plt.subplots(figsize=(2, 2))
+    fig, ax = plt.subplots(figsize=(4, 4))
     wedges, texts, autotexts = ax.pie(
         values,
         labels=None,
@@ -145,7 +145,9 @@ if total > 0:
     )
     ax.set_title(f"Total: {total:.1f} t CO₂e/year", fontsize=13, pad=16)
     fig.patch.set_alpha(0)
-    st.pyplot(fig)
+    _, chart_col, _ = st.columns([1, 2, 1])
+    with chart_col:
+        st.pyplot(fig)
 else:
     st.info("Enter your data above to see the chart.")
 
