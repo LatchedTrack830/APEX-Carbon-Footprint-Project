@@ -10,7 +10,7 @@ col1, col2 = st.columns(2)
 with col1:
     people = st.number_input("Household size (people)", min_value=1, max_value=20, value=4)
     kwh = st.number_input("Electricity (kWh/month)", min_value=0, value=900, help="US average ~900 kWh/month")
-    gas = st.number_input("Natural gas (therms/month)", min_value=0, value=50, help="Enter 0 if all-electric")
+    gas = st.number_input("Natural gas (therms/month)", min_value=0, value=50, help="US average ~55 therms/month. Enter 0 if all-electric")
 with col2:
     oil = st.number_input("Heating oil (gallons/month)", min_value=0, value=0, help="US average around 100-200 gallons/month")
     solar = st.selectbox("Solar panels?", options=[
@@ -33,12 +33,12 @@ for i in range(num_cars):
     st.subheader(f"Vehicle {i+1}")
     c1, c2, c3 = st.columns(3)
     with c1:
-        vtype = st.selectbox("Type", ["Gasoline", "Hybrid", "Electric (EV)"], key=f"vtype_{i}")
+        vtype = st.selectbox("Type", ["Gasoline", "Hybrid", "Electric (EV)"], key=f"vtype_{i}", help="Around 25mpg on average, newer models closer to 30mpg.")
     with c2:
         label = "Efficiency (MPGe)" if vtype == "Electric (EV)" else "Fuel economy (MPG)"
         mpg = st.number_input(label, min_value=1, value=28, key=f"mpg_{i}")
     with c3:
-        miles = st.number_input("Miles/year", min_value=0, value=12000, key=f"miles_{i}")
+        miles = st.number_input("Miles/year", min_value=0, value=12000, key=f"miles_{i}", help="12,000-14,000 miles per year.")
 
     if vtype == "Electric (EV)":
         drive_total += (miles / mpg) * 0.000386 * 33.7 * solar_factor * 0.5
