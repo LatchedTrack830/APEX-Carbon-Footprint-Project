@@ -208,3 +208,4 @@ else:
 
 st.divider()
 st.caption("Emission factors: EPA eGRID (electricity), EPA GHG inventory (gas/oil/fuel), OWID (diet), BEIS (flights). Results are estimates.")
+#i think i cooked
