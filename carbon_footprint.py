@@ -118,7 +118,7 @@ if total > 0:
     values = [home_total, drive_total, fly_total, diet_total, shop_total]
     colors = ["#1D9E75", "#7F77DD", "#D85A30", "#EF9F27", "#D4537E"]
 
-    fig, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(2, 2))
     wedges, texts, autotexts = ax.pie(
         values,
         labels=None,
