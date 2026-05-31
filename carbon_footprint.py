@@ -1,4 +1,5 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Carbon Footprint Calculator", page_icon="🌍", layout="wide")
 st.title("🌍 Household Carbon Footprint Calculator")
@@ -109,6 +110,44 @@ for label, val in categories.items():
     cols[0].write(label)
     cols[1].progress(min(pct / 100, 1.0))
     cols[2].write(f"{val:.1f} t")
+
+# --- PIE CHART ---
+st.subheader("Pie Chart")
+if total > 0:
+    labels = ["Home Energy", "Driving", "Flights", "Diet", "Shopping"]
+    values = [home_total, drive_total, fly_total, diet_total, shop_total]
+    colors = ["#1D9E75", "#7F77DD", "#D85A30", "#EF9F27", "#D4537E"]
+
+    fig, ax = plt.subplots(figsize=(6, 6))
+    wedges, texts, autotexts = ax.pie(
+        values,
+        labels=None,
+        autopct=lambda p: f"{p:.1f}%" if p > 2 else "",
+        colors=colors,
+        startangle=140,
+        wedgeprops={"edgecolor": "white", "linewidth": 1.5},
+        pctdistance=0.75,
+    )
+    for at in autotexts:
+        at.set_fontsize(11)
+        at.set_color("white")
+        at.set_fontweight("bold")
+
+    legend_labels = [f"{l}  ({v:.1f} t)" for l, v in zip(labels, values)]
+    ax.legend(
+        wedges,
+        legend_labels,
+        loc="lower center",
+        bbox_to_anchor=(0.5, -0.15),
+        ncol=2,
+        fontsize=10,
+        frameon=False,
+    )
+    ax.set_title(f"Total: {total:.1f} t CO₂e/year", fontsize=13, pad=16)
+    fig.patch.set_alpha(0)
+    st.pyplot(fig)
+else:
+    st.info("Enter your data above to see the chart.")
 
 st.divider()
 st.caption("Emission factors: EPA eGRID (electricity), EPA GHG inventory (gas/oil/fuel), OWID (diet), BEIS (flights). Results are estimates.")
