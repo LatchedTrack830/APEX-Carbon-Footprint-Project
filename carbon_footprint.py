@@ -207,5 +207,5 @@ else:
                 st.write(desc)
 
 st.divider()
-st.caption("Emission factors: EPA eGRID (electricity), EPA GHG inventory (gas/oil/fuel), OWID (diet), BEIS (flights). Results are estimates.")
+st.caption("Chat did I cook?")
 #i think i cooked
