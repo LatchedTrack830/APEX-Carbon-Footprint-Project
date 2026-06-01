@@ -6,7 +6,7 @@ st.title("🌍 Household Carbon Footprint Calculator")
 st.caption("Estimates annual CO₂e emissions in metric tonnes")
 
 # --- HOME ENERGY ---
-st.header("🏠 Home Energy")
+st.header("Home Energy")
 col1, col2 = st.columns(2)
 with col1:
     people = st.number_input("Household size (people)", min_value=1, max_value=20, value=4)
@@ -27,7 +27,7 @@ home_oil = oil * 12 * 0.010156
 home_total = home_elec + home_gas + home_oil
 
 # --- VEHICLES ---
-st.header("🚗 Vehicles")
+st.header("Vehicles")
 num_cars = st.number_input("Number of vehicles", min_value=0, max_value=6, value=1)
 drive_total = 0.0
 for i in range(num_cars):
@@ -48,7 +48,7 @@ for i in range(num_cars):
 drive_total /= 1000
 
 # --- FLIGHTS ---
-st.header("✈️ Flights (per year, all passengers)")
+st.header("Flights (per year, all passengers)")
 c1, c2, c3 = st.columns(3)
 with c1:
     f_short = st.number_input("Short haul (<3 hrs)", min_value=0, value=0, help="~0.25 t each")
@@ -59,7 +59,7 @@ with c3:
 fly_total = f_short * 0.25 + f_med * 0.7 + f_long * 1.6
 
 # --- DIET ---
-st.header("🥗 Diet")
+st.header("Diet")
 diet_map = {
     "Meat-heavy (beef most days)": 3.3,
     "Average omnivore": 2.5,
@@ -72,7 +72,7 @@ diet_choice = st.selectbox("Dietary pattern (per person)", list(diet_map.keys())
 diet_total = diet_map[diet_choice] * people
 
 # --- SHOPPING ---
-st.header("🛍️ Shopping & Consumption")
+st.header("Shopping & Consumption")
 c1, c2, c3 = st.columns(3)
 with c1:
     clothes = st.number_input("Monthly spend on clothes ($)", min_value=0, value=100)
@@ -154,7 +154,7 @@ else:
 st.divider()
 
 # --- RECOMMENDATIONS ---
-st.header("💡 Recommendations")
+st.header("Recommendations based on your input.")
 
 if total == 0:
     st.info("Fill in your data above to get personalized recommendations.")
