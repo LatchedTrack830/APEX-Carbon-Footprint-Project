@@ -112,7 +112,7 @@ for label, val in categories.items():
     cols[2].write(f"{val:.1f} t")
 
 # --- PIE CHART ---
-st.subheader("Pie Chart")
+st.subheader("Breakdown of your carbon footprint.")
 if total > 0:
     labels = ["Home Energy", "Driving", "Flights", "Diet", "Shopping"]
     values = [home_total, drive_total, fly_total, diet_total, shop_total]
