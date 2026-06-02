@@ -401,22 +401,7 @@ if total > 0:
         f"**{trees_equivalent:.0f} mature trees**."
     )
 
-    st.subheader("Before vs After")
-
-    before_col, after_col = st.columns(2)
-
-    with before_col:
-        st.metric(
-            "Current Footprint",
-            f"{total:.1f} t CO₂e"
-        )
-
-    with after_col:
-        st.metric(
-            "After Change",
-            f"{new_total:.1f} t CO₂e",
-            delta=f"-{reduction_pct:.1f}%"
-        )
+    
 
     st.progress(new_total / total)
 
