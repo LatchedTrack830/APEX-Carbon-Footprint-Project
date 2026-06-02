@@ -87,7 +87,7 @@ total = home_total + drive_total + fly_total + diet_total + shop_total
 avg = 16 * people
 
 st.divider()
-st.header("📊 Results")
+st.header("Results")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Annual Footprint", f"{total:.1f} t CO₂e")
@@ -208,7 +208,7 @@ else:
 
 # --- WHAT IF SCENARIOS ---
 st.divider()
-st.header("🔄 What If?")
+st.header("What If?")
 
 st.write(
     "Choose one realistic change and see how much it would reduce your footprint and save you each year."
@@ -400,7 +400,7 @@ if total > 0:
         f"That's roughly equivalent to the annual carbon absorption of "
         f"**{trees_equivalent:.0f} mature trees**."
     )
-    
+
 st.divider()
 st.caption("Chat did I cook?")
 #i think i cooked
