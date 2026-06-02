@@ -400,12 +400,7 @@ if total > 0:
         f"That's roughly equivalent to the annual carbon absorption of "
         f"**{trees_equivalent:.0f} mature trees**."
     )
-
-    if money_saved > 1000:
-        st.success(
-            f"This change could save over ${money_saved:,.0f} every year."
-        )
-
+    
 st.divider()
 st.caption("Chat did I cook?")
 #i think i cooked
