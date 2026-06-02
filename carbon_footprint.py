@@ -79,12 +79,12 @@ with c1:
 with c2:
     electronics = st.number_input("Monthly spend on electronics ($)", min_value=0, value=30)
 with c3:
-    goods = st.number_input("Monthly spend on other goods ($)", min_value=0, value=200)
+    goods = st.number_input("Monthly spend on other goods (things like groceries) ($)", min_value=0, value=200)
 shop_total = (clothes * 0.0005 + electronics * 0.0008 + goods * 0.0003) * 12
 
 # --- RESULTS ---
 total = home_total + drive_total + fly_total + diet_total + shop_total
-avg = 15 * people
+avg = 16 * people
 
 st.divider()
 st.header("📊 Results")
@@ -205,6 +205,178 @@ else:
         for icon, title, desc in recs:
             with st.expander(f"{icon} {title}"):
                 st.write(desc)
+
+# --- WHAT IF SCENARIOS ---
+st.divider()
+st.header("🔄 What If?")
+
+st.write(
+    "Choose one realistic change and see how much it would reduce your footprint."
+)
+
+change = st.selectbox(
+    "Which change would you realistically make?",
+    [
+        "Convert meals to vegetarian",
+        "Drive less",
+        "Take fewer flights",
+        "Reduce electricity usage",
+        "Install solar panels",
+    ]
+)
+
+savings = 0.0
+
+# --- VEGETARIAN MEALS ---
+if change == "Convert meals to vegetarian":
+
+    veg_meals = st.number_input(
+        "How many meals per week would you convert to vegetarian?",
+        min_value=0,
+        max_value=21,
+        value=3,
+    )
+
+    # Rough estimate:
+    # Replacing a meat meal with a vegetarian meal saves ~2 kg CO₂e
+    savings = veg_meals * 52 * 2 / 1000 * people
+
+# --- DRIVE LESS ---
+elif change == "Drive less":
+
+    fewer_miles = st.number_input(
+        "How many miles per year would you reduce?",
+        min_value=0,
+        value=2000,
+    )
+
+    avg_vehicle_emission = 0
+
+    if num_cars > 0:
+        total_emissions_kg = 0
+
+        for i in range(num_cars):
+            vtype = st.session_state.get(f"vtype_{i}", "Gasoline")
+            mpg = st.session_state.get(f"mpg_{i}", 28)
+
+            if vtype == "Electric (EV)":
+                kg_per_mile = (1 / mpg) * 33.7 * 0.386 * solar_factor
+            else:
+                kg_per_mile = 8.887 / mpg
+
+            total_emissions_kg += kg_per_mile
+
+        avg_vehicle_emission = total_emissions_kg / num_cars
+
+    savings = fewer_miles * avg_vehicle_emission / 1000
+
+# --- FEWER FLIGHTS ---
+elif change == "Take fewer flights":
+
+    flight_type = st.selectbox(
+        "Flight type",
+        [
+            "Short haul (<3 hrs)",
+            "Medium haul (3–6 hrs)",
+            "Long haul (>6 hrs)",
+        ]
+    )
+
+    num_flights_cut = st.number_input(
+        "Number of flights avoided per year",
+        min_value=0,
+        value=1,
+    )
+
+    flight_map = {
+        "Short haul (<3 hrs)": 0.25,
+        "Medium haul (3–6 hrs)": 0.7,
+        "Long haul (>6 hrs)": 1.6,
+    }
+
+    savings = flight_map[flight_type] * num_flights_cut
+
+# --- ELECTRICITY REDUCTION ---
+elif change == "Reduce electricity usage":
+
+    reduction_pct = st.slider(
+        "Percent reduction in electricity use",
+        min_value=0,
+        max_value=50,
+        value=15,
+    )
+
+    savings = home_elec * (reduction_pct / 100)
+
+# --- SOLAR ---
+elif change == "Install solar panels":
+
+    solar_choice = st.radio(
+        "Solar system size",
+        [
+            "Partial offset (~50%)",
+            "Full offset (~90%)",
+        ]
+    )
+
+    if solar_choice == "Partial offset (~50%)":
+        new_factor = 0.5
+    else:
+        new_factor = 0.1
+
+    new_home_elec = kwh * 12 * 0.000386 * new_factor
+
+    savings = max(home_elec - new_home_elec, 0)
+
+# --- RESULTS ---
+if total > 0:
+
+    savings = min(savings, total)
+
+    new_total = total - savings
+    reduction_pct = (savings / total) * 100
+
+    st.subheader("Estimated Impact")
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.metric(
+            "CO₂e Saved",
+            f"{savings:.2f} t/year"
+        )
+
+    with c2:
+        st.metric(
+            "Reduction",
+            f"{reduction_pct:.1f}%"
+        )
+
+    with c3:
+        st.metric(
+            "New Footprint",
+            f"{new_total:.1f} t/year"
+        )
+
+    trees_equivalent = savings / 0.021
+
+    st.info(
+        f"This change would save approximately **{savings:.2f} tonnes of CO₂e per year**, "
+        f"which is roughly equivalent to the annual carbon absorption of "
+        f"**{trees_equivalent:.0f} mature trees**."
+    )
+
+    # Visual comparison bar
+    st.subheader("Before vs After")
+
+    before_pct = 100
+    after_pct = (new_total / total) * 100
+
+    st.progress(before_pct / 100)
+    st.caption(f"Current footprint: {total:.1f} t CO₂e")
+
+    st.progress(after_pct / 100)
+    st.caption(f"After change: {new_total:.1f} t CO₂e")
 
 st.divider()
 st.caption("Chat did I cook?")
