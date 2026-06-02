@@ -366,18 +366,6 @@ if total > 0:
         f"**{trees_equivalent:.0f} mature trees**."
     )
 
-    # Visual comparison bar
-    st.subheader("Before vs After")
-
-    before_pct = 100
-    after_pct = (new_total / total) * 100
-
-    st.progress(before_pct / 100)
-    st.caption(f"Current footprint: {total:.1f} t CO₂e")
-
-    st.progress(after_pct / 100)
-    st.caption(f"After change: {new_total:.1f} t CO₂e")
-
 st.divider()
 st.caption("Chat did I cook?")
 #i think i cooked
