@@ -211,7 +211,7 @@ st.divider()
 st.header("🔄 What If?")
 
 st.write(
-    "Choose one realistic change and see how much it would reduce your footprint."
+    "Choose one realistic change and see how much it would reduce your footprint and save you each year."
 )
 
 change = st.selectbox(
@@ -225,7 +225,8 @@ change = st.selectbox(
     ]
 )
 
-savings = 0.0
+savings = 0.0          # tonnes CO₂e
+money_saved = 0.0      # dollars
 
 # --- VEGETARIAN MEALS ---
 if change == "Convert meals to vegetarian":
@@ -237,9 +238,11 @@ if change == "Convert meals to vegetarian":
         value=3,
     )
 
-    # Rough estimate:
-    # Replacing a meat meal with a vegetarian meal saves ~2 kg CO₂e
+    # ~2 kg CO₂e saved per meal
     savings = veg_meals * 52 * 2 / 1000 * people
+
+    # Assume vegetarian meal costs ~$2 less
+    money_saved = veg_meals * 52 * 2 * people
 
 # --- DRIVE LESS ---
 elif change == "Drive less":
@@ -270,6 +273,9 @@ elif change == "Drive less":
 
     savings = fewer_miles * avg_vehicle_emission / 1000
 
+    # Fuel + maintenance
+    money_saved = fewer_miles * 0.15
+
 # --- FEWER FLIGHTS ---
 elif change == "Take fewer flights":
 
@@ -296,6 +302,17 @@ elif change == "Take fewer flights":
 
     savings = flight_map[flight_type] * num_flights_cut
 
+    flight_cost_map = {
+        "Short haul (<3 hrs)": 250,
+        "Medium haul (3–6 hrs)": 500,
+        "Long haul (>6 hrs)": 1200,
+    }
+
+    money_saved = (
+        flight_cost_map[flight_type]
+        * num_flights_cut
+    )
+
 # --- ELECTRICITY REDUCTION ---
 elif change == "Reduce electricity usage":
 
@@ -307,6 +324,9 @@ elif change == "Reduce electricity usage":
     )
 
     savings = home_elec * (reduction_pct / 100)
+
+    annual_electric_bill = kwh * 12 * 0.17
+    money_saved = annual_electric_bill * (reduction_pct / 100)
 
 # --- SOLAR ---
 elif change == "Install solar panels":
@@ -328,6 +348,13 @@ elif change == "Install solar panels":
 
     savings = max(home_elec - new_home_elec, 0)
 
+    annual_electric_bill = kwh * 12 * 0.17
+
+    if solar_choice == "Partial offset (~50%)":
+        money_saved = annual_electric_bill * 0.50
+    else:
+        money_saved = annual_electric_bill * 0.90
+
 # --- RESULTS ---
 if total > 0:
 
@@ -338,7 +365,7 @@ if total > 0:
 
     st.subheader("Estimated Impact")
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
 
     with c1:
         st.metric(
@@ -358,13 +385,45 @@ if total > 0:
             f"{new_total:.1f} t/year"
         )
 
+    with c4:
+        st.metric(
+            "Money Saved",
+            f"${money_saved:,.0f}/year"
+        )
+
     trees_equivalent = savings / 0.021
 
     st.info(
-        f"This change would save approximately **{savings:.2f} tonnes of CO₂e per year**, "
-        f"which is roughly equivalent to the annual carbon absorption of "
+        f"This change would save approximately "
+        f"**{savings:.2f} tonnes of CO₂e per year** and about "
+        f"**${money_saved:,.0f} per year**. "
+        f"That's roughly equivalent to the annual carbon absorption of "
         f"**{trees_equivalent:.0f} mature trees**."
     )
+
+    st.subheader("Before vs After")
+
+    before_col, after_col = st.columns(2)
+
+    with before_col:
+        st.metric(
+            "Current Footprint",
+            f"{total:.1f} t CO₂e"
+        )
+
+    with after_col:
+        st.metric(
+            "After Change",
+            f"{new_total:.1f} t CO₂e",
+            delta=f"-{reduction_pct:.1f}%"
+        )
+
+    st.progress(new_total / total)
+
+    if money_saved > 1000:
+        st.success(
+            f"This change could save over ${money_saved:,.0f} every year."
+        )
 
 st.divider()
 st.caption("Chat did I cook?")
