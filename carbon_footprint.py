@@ -401,10 +401,6 @@ if total > 0:
         f"**{trees_equivalent:.0f} mature trees**."
     )
 
-    
-
-    st.progress(new_total / total)
-
     if money_saved > 1000:
         st.success(
             f"This change could save over ${money_saved:,.0f} every year."
